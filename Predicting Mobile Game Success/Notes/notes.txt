@@ -1,0 +1,65 @@
+ # H = data[data['Rate'] == 2].shape[0]
+        # I = data[data['Rate'] == 1].shape[0]
+        # L = data[data['Rate'] == 0].shape[0]
+        # # print(H, I, L)
+        # x = (data[data['Rate'] == 2].sum())['Rate']
+        # mean_high =  ((data[data['Rate'] == 2].sum().sum()) - x )/H
+        #
+        # x = (data[data['Rate'] == 1].sum())['Rate']
+        # mean_Intermediate= ((data[data['Rate'] == 1].sum().sum()) - x)/I
+        #
+        # x = (data[data['Rate'] == 0].sum())['Rate']
+        # mean_low = ((data[data['Rate'] == 0].sum().sum()) - x)/L
+
+
+        # data['Rate'] = data.apply(
+        #     lambda row: np.argmin([abs(row.sum() - mean_low),
+        #                            abs(row.sum() - mean_Intermediate),
+        #                            abs(row.sum() - mean_high)])
+        #     if np.isnan(row['Rate']) else row['Rate'],
+        #     axis=1
+        # )
+
+        # print(mean_high , mean_Intermediate ,mean_low )
+        # data = data.drop(columns=['Developer','Original Release Year' , 'Original Release Month'])
+        # data.dropna(how='any', axis='rows', inplace=True)
+        # data['Rate'].fillna(0, inplace=True)
+/////////////////
+# print(data.info())
+    # data['Rate'] = data.apply(
+    #     lambda row: 0 if np.isnan(row['Rate']) and row.sum() <= mean_low
+    #         else 1 if np.isnan(row['Rate']) and row.sum() > mean_low and row.sum() <=mean_Intermediate
+    #         else 2 if np.isnan(row['Rate']) and row.sum() > mean_Intermediate and row.sum() <= mean_high
+    #         else data['Rate'] ,
+    #         axis=1
+    # )
+# def calc_Rate_Mean():
+    #     mean_high = 0
+    #     mean_Intermediate = 0
+    #     mean_low = 0
+    #     for row in range(data.shape[0]):
+    #         sum = 0.0
+    #         for col in data:
+    #             # print(col)
+    #             if col == 'Rate':
+    #                 continue
+    #             else:
+    #                 # print(row , col, (data[col][row]))
+    #                 if data[col].get(row) is None :
+    #                     continue
+    #                 else:
+    #                     sum+=float(data[col].get(row))
+    #         if data['Rate'].get(row) is None :
+    #             continue
+    #         else:
+    #             if data['Rate'][row] == 2 :
+    #                 mean_high+=sum
+    #             elif data['Rate'][row] == 1:
+    #                 mean_Intermediate+=sum
+    #             elif data['Rate'][row] == 0:
+    #                 mean_low+=sum
+    #
+    #
+    #     #H = sum(data['Rate'] == 2)
+    #     # print(data[data['Rate'] == 2].shape[0])
+    #     return mean_high , mean_Intermediate , mean_low

@@ -1,0 +1,54 @@
+self.dataTest.drop(columns=['URL', 'ID', 'Name', 'Icon URL', 'Description', 'Subtitle', 'Primary Genre'], inplace=True)
+        self.dataTest.dropna(how='all', axis='columns', inplace=True)
+        self.dataTest.dropna(how='all', axis='rows', inplace=True)
+
+        self.dataTest["Price"].fillna(self.avgPrice, inplace=True)
+        self.dataTest["Size"].fillna(self.avgSize, inplace=True)
+
+        self.dataTest["Languages"].fillna('EN', inplace=True)
+        self.dataTest["Languages"] = self.dataTest["Languages"].map(lambda x: x.split(", "))
+
+        self.dataTest['User Rating Count'].fillna(0, inplace=True)
+        self.dataTest['In-app Purchases'] = self.dataTest['In-app Purchases'].map(
+            lambda x: sum(float(i) for i in str(x).split(",")))
+
+        self.dataTest["Size"] = self.dataTest["Size"].map(lambda x: round(x / (1024 * 1024), 2))
+        self.dataTest["Genres"] = self.dataTest["Genres"].map(lambda x: x.split(", "))
+
+
+        self.dataTest["Current Version Release Date"] = self.dataTest["Current Version Release Date"].map(
+            lambda x: datetime.strptime(x, "%d/%m/%Y"))
+        self.dataTest["Current Version Release Year"] = self.dataTest["Current Version Release Date"].map(lambda x: x.year)
+        self.dataTest["Current Version Release Month"] = self.dataTest["Current Version Release Date"].map(lambda x: x.month)
+
+        self.dataTest.drop(columns=['Original Release Date', 'Current Version Release Date'], inplace=True)
+
+        self.dataTest["Age Rating"] = self.dataTest["Age Rating"].map(lambda x: float(x[:-1]))
+        self.dataTest.drop(columns=['Developer'],inplace=True)
+
+        self.extract_column(self.dataTest,"Languages", 1000,0)
+        self.extract_column(self.dataTest,"Genres", 1000,0)
+
+        self.dataTest.drop(columns=["Languages"], inplace=True)
+        self.dataTest.drop(columns=["Genres"], inplace=True)
+
+        self.dataTest["Rate"] = self.dataTest["Rate"].map(
+            lambda x: 2 if x == 'High' else 1 if x == 'Intermediate' else 0 if x == 'Low' else x)
+
+        def Feature_Normalizer(X, cols):
+            for c in cols:
+                norm = preprocessing.MinMaxScaler(feature_range=(0, 1))
+                norm.fit(X[c].values.reshape(-1, 1))
+                X[c] = norm.transform(X[c].values.reshape(-1, 1))
+            return X
+
+        self.dataTest = Feature_Normalizer(self.dataTest, ['User Rating Count', 'Price','Age Rating'
+                                             ,'In-app Purchases','Size'
+                                            , 'Current Version Release Year'
+                                            ,'Current Version Release Month'])
+
+        Y = self.dataTest['Rate']  # Label
+        X = self.dataTest.drop(columns=["Rate"], inplace=False)
+
+        self.dataTest.to_csv("NewDataset_Test.csv", encoding='utf-8', index=False)
+        return X,Y
